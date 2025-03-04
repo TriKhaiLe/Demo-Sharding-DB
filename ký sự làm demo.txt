@@ -1,0 +1,8 @@
+1. Dùng Winform fail: ko dùng đc thư viện postgres phiên bản cao làm lỗi authentication khi connect db
+2. Dùng web API: hệ thống lưu điểm số người chơi
++ Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+-> cần tạo migration xuống db
+
++ Unable to create a 'DbContext' of type 'RuntimeType'. The exception 'Unable to resolve service for type 'Microsoft.EntityFrameworkCore.DbContextOptions`1[DemoShardingWithAPI.ScoreDbContext]' while attempting to activate 'DemoShardingWithAPI.ScoreDbContext'.' was thrown while attempting to create an instance.
+-> do ef core cli bản cũ
+-> do chưa DI dbcontext ở design time
