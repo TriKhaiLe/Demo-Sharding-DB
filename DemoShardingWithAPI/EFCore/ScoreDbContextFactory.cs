@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore;
 
-namespace DemoShardingWithAPI
+namespace DemoShardingWithAPI.EFCore
 {
     public class ScoreDbContextFactory : IDesignTimeDbContextFactory<ScoreDbContext>
     {

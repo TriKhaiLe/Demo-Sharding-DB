@@ -1,4 +1,6 @@
 
+using DemoShardingWithAPI.Services;
+
 namespace DemoShardingWithAPI
 {
     public class Program

@@ -1,7 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DemoShardingWithAPI.Entities;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 
-namespace DemoShardingWithAPI
+namespace DemoShardingWithAPI.EFCore
 {
     public class ScoreDbContext : DbContext
     {

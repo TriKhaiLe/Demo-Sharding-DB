@@ -1,7 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DemoShardingWithAPI.EFCore;
+using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
-namespace DemoShardingWithAPI
+namespace DemoShardingWithAPI.Services
 {
     public class ShardService
     {

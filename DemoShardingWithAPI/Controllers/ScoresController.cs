@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DemoShardingWithAPI.EFCore;
+using DemoShardingWithAPI.Entities;
+using DemoShardingWithAPI.Services;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace DemoShardingWithAPI
+namespace DemoShardingWithAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -14,7 +17,7 @@ namespace DemoShardingWithAPI
             _shardService = shardService;
         }
 
-        // 🟢 Thêm điểm số
+        // Thêm điểm số
         [HttpPost]
         public async Task<IActionResult> AddScore([FromBody] Score score)
         {
@@ -38,7 +41,7 @@ namespace DemoShardingWithAPI
             return Ok($"Score added for User {score.UserId} in Shard {score.UserId % 3}");
         }
 
-        // 🔵 Xem điểm số theo User ID
+        // Xem điểm số theo User ID
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetScores(int userId)
         {
