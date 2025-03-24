@@ -37,5 +37,11 @@ namespace DemoShardingWithAPI.Services
             int shardId = userId % 3;
             return _shardConnections[shardId];
         }
+
+        // lấy số shard
+        public int GetShardCount()
+        {
+            return _shardConnections.Count;
+        }
     }
 }

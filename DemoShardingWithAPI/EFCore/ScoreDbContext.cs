@@ -9,5 +9,6 @@ namespace DemoShardingWithAPI.EFCore
         public ScoreDbContext(DbContextOptions<ScoreDbContext> options) : base(options) { }
 
         public DbSet<Score> Scores { get; set; }
+        public DbSet<User> Users { get; set; }
     }
 }
