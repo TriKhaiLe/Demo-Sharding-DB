@@ -72,32 +72,23 @@ namespace DemoShardingWithAPI.Controllers
                 return BadRequest("Username cannot be empty.");
             }
 
-            var allScores = new List<Score>();
             int shardCount = _shardService.GetShardCount();
+            var allScores = new List<Score>();
 
-            // Query từng shard
+            // Tạo danh sách các task để query song song từng shard
+            var queryTasks = new List<Task<List<Score>>>();
             for (int shardId = 0; shardId < shardCount; shardId++)
             {
-                string connectionString = _shardService.GetShardConnectionString(shardId);
+                queryTasks.Add(QueryShardAsync(shardId, username));
+            }
 
-                var options = new DbContextOptionsBuilder<ScoreDbContext>()
-                    .UseNpgsql(connectionString)
-                    .Options;
+            // Chờ tất cả các task hoàn thành và lấy kết quả
+            var results = await Task.WhenAll(queryTasks);
 
-                using (var dbContext = new ScoreDbContext(options))
-                {
-                    // Join giữa Users và Scores để tìm theo username
-                    var scoresFromShard = await dbContext.Scores
-                        .Join(dbContext.Users,
-                            score => score.UserId,
-                            user => user.Id,
-                            (score, user) => new { Score = score, User = user })
-                        .Where(joined => joined.User.Username == username)
-                        .Select(joined => joined.Score)
-                        .ToListAsync();
-
-                    allScores.AddRange(scoresFromShard);
-                }
+            // Tổng hợp kết quả từ tất cả shard
+            foreach (var scoresFromShard in results)
+            {
+                allScores.AddRange(scoresFromShard);
             }
 
             if (allScores.Count == 0)
@@ -106,6 +97,27 @@ namespace DemoShardingWithAPI.Controllers
             }
 
             return Ok(allScores);
+        }
+
+        private async Task<List<Score>> QueryShardAsync(int shardId, string username)
+        {
+            string connectionString = _shardService.GetShardConnectionString(shardId);
+            var options = new DbContextOptionsBuilder<ScoreDbContext>()
+                .UseNpgsql(connectionString)
+                .Options;
+
+            using (var dbContext = new ScoreDbContext(options))
+            {
+                return await dbContext.Scores
+                    .AsNoTracking() // Thêm AsNoTracking để tối ưu hiệu suất
+                    .Join(dbContext.Users,
+                        score => score.UserId,
+                        user => user.Id,
+                        (score, user) => new { Score = score, User = user })
+                    .Where(joined => joined.User.Username == username)
+                    .Select(joined => joined.Score)
+                    .ToListAsync();
+            }
         }
 
         [HttpPost("user")]
